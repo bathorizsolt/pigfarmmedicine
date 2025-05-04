@@ -98,12 +98,13 @@
       .eq('password', password)
       .single();
 
-    if (error || !data) {
-      showError('Invalid Farm ID or Password');
-    } else {
-      window.location.href = 'register.html';
-    }
-  }
+if (error || !data) {
+    showError('Invalid Farm ID or Password');
+    console.log('Login failed:', error);
+} else {
+    console.log('User logged in successfully:', data);
+    window.location.href = 'register.html';
+}
 
   function showError(message) {
     errorMessage.textContent = message;
