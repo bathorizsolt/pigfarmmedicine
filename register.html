@@ -30,7 +30,6 @@
     <div class="container mx-auto px-4 py-8">
         <div class="bg-white rounded-lg shadow-lg p-6">
             <div class="flex justify-between items-center mb-6">
-                <div id="registerPage" class="min-h-screen flex items-center justify-center login-container">
                 <h1 class="text-3xl font-bold text-indigo-800">
                     <i class="fas fa-piggy-bank mr-2"></i> Pig Farm Medicine Tracker
                 </h1>
@@ -202,21 +201,6 @@
         </div>
     </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const supabaseUrl = 'https://zjhsypraktznwwpzznlr.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-        const user = supabase.auth.user();
-        console.log('User session:', user);
-        if (!user) {
-            window.location.href = 'login.html';
-        } else {
-            console.log('User is logged in:', user);
-        }
-    </script>
-    
     <script>
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -516,21 +500,17 @@
                 });
             }
         }
-
-        // Export to PDF
+        
         function exportToPdf() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            // Title
             doc.setFontSize(18);
             doc.text('Pig Farm Medicine Records', 14, 22);
-            
-            // Date
+
             doc.setFontSize(10);
             doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
-            
-            // Table data
+
             const headers = [
                 'Farm #', 
                 'Barn/Section', 
@@ -555,7 +535,6 @@
                 record.notes || '-'
             ]);
             
-            // AutoTable
             doc.autoTable({
                 head: [headers],
                 body: data,
