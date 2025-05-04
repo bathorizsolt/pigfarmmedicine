@@ -19,7 +19,6 @@
     </style>
 </head>
 <body class="bg-gray-100">
-    <!-- Login Page -->
     <div id="loginPage" class="min-h-screen flex items-center justify-center login-container">
         <div class="bg-white bg-opacity-90 p-8 rounded-lg shadow-xl w-full max-w-md">
             <div class="text-center mb-8">
@@ -79,42 +78,20 @@
 
         loginForm.addEventListener('submit', handleLogin);
 
-        async function handleLogin(e) {
-            e.preventDefault();
+        function handleLogin(e) {
+    e.preventDefault();
 
-            const farmId = document.getElementById('farmId').value.trim();
-            const password = document.getElementById('password').value;
+    const farmId = document.getElementById('farmId').value.trim();
+    const password = document.getElementById('password').value;
 
-            if (!farmId || !password) {
-                showError('Please enter both Farm ID and Password');
-                return;
-            }
+    if (!farmId || !password) {
+        showError('Please enter both Farm ID and Password');
+        return;
+    }
 
-            const email = `${farmId}@farm.local`;
+    window.location.href = 'register.html';
+}
 
-            try {
-               const { data, error } = await supabase.auth.signInWithPassword({
-                    email: email,
-                    password: password,
-            });
-
-            if (error) {
-                showError(error.message);
-            } else {
-                console.log('User logged in:', data);
-                window.location.href = 'register.html';
-            }
-            } catch (error) {
-                showError(error.message);
-            }
-        }
-
-        function showError(message) {
-            errorMessage.textContent = message;
-            setTimeout(() => {
-                errorMessage.textContent = '';
-            }, 3000);
-        }
     </script>
 </body>
 </html>
