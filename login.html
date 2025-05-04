@@ -67,31 +67,50 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const supabaseUrl = 'https://zjhsypraktznwwpzznlr.supabase.co'; 
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        const loginForm = document.getElementById('loginForm');
-        const errorMessage = document.getElementById('errorMessage');
+<script>
+  const supabaseUrl = 'https://zjhsypraktznwwpzznlr.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-        loginForm.addEventListener('submit', handleLogin);
+  const loginForm = document.getElementById('loginForm');
+  const errorMessage = document.getElementById('errorMessage');
 
-        function handleLogin(e) {
+  loginForm.addEventListener('submit', handleLogin);
+
+  async function handleLogin(e) {
     e.preventDefault();
 
     const farmId = document.getElementById('farmId').value.trim();
     const password = document.getElementById('password').value;
 
     if (!farmId || !password) {
-        showError('Please enter both Farm ID and Password');
-        return;
+      showError('Please enter both Farm ID and Password');
+      return;
     }
 
-    window.location.href = 'register.html';
-}
 
-    </script>
+    const { data, error } = await supabase
+      .from('login')
+      .select('*')
+      .eq('farm_id', farmId)
+      .eq('password', password)
+      .single();
+
+    if (error || !data) {
+      showError('Invalid Farm ID or Password');
+    } else {
+      window.location.href = 'register.html';
+    }
+  }
+
+  function showError(message) {
+    errorMessage.textContent = message;
+    setTimeout(() => {
+      errorMessage.textContent = '';
+    }, 3000);
+  }
+</script>
 </body>
 </html>
