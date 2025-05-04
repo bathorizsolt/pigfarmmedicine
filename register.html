@@ -42,7 +42,8 @@
                     </button>
                 </div>
             </div>
-
+            <div id="userInfo" class="text-gray-500 text-sm text-left mb-4">
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-indigo-50 p-4 rounded-lg">
                     <h2 class="text-xl font-semibold text-indigo-700 mb-4">Add New Medicine Record</h2>
@@ -555,5 +556,24 @@
             
         }
     </script>
-<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=bathorizsolt/pig-farm-medicine-tracker" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=bathorizsolt/pig-farm-medicine-tracker" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const supabaseUrl = 'https://zjhsypraktznwwpzznlr.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+  window.onload = async () => {
+    const user = supabase.auth.user();
+
+    if (user) {
+      const userInfoDiv = document.getElementById('userInfo');
+      userInfoDiv.textContent = `Logged in as: ${user.user_metadata.farm_id}`; // Vagy más adat, amit szeretnél
+    } else {
+      console.log('No user is logged in');
+    }
+  };
+</script>
+
+</body>
 </html>
