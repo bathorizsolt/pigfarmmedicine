@@ -67,53 +67,62 @@
         </div>
     </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
-  const supabaseUrl = 'https://zjhsypraktznwwpzznlr.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
-  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const supabaseUrl = 'https://zjhsypraktznwwpzznlr.supabase.co';
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
+            const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-  const loginForm = document.getElementById('loginForm');
-  const errorMessage = document.getElementById('errorMessage');
+            const loginForm = document.getElementById('loginForm');
+            const errorMessage = document.getElementById('errorMessage');
 
-  loginForm.addEventListener('submit', handleLogin);
+            loginForm.addEventListener('submit', handleLogin);
 
-  async function handleLogin(e) {
-    e.preventDefault();
+            async function handleLogin(e) {
+                e.preventDefault();
 
-    const farmId = document.getElementById('farmId').value.trim();
-    const password = document.getElementById('password').value;
+                const farmId = document.getElementById('farmId').value.trim();
+                const password = document.getElementById('password').value;
 
-    if (!farmId || !password) {
-      showError('Please enter both Farm ID and Password');
-      return;
-    }
+                if (!farmId || !password) {
+                    showError('Please enter both Farm ID and Password');
+                    return;
+                }
 
+                console.log('Attempting login with:', { farmId, password });
 
-    const { data, error } = await supabase
-      .from('login')
-      .select('*')
-      .eq('farm_id', farmId)
-      .eq('password', password)
-      .single();
+                try {
+                    const { data, error } = await supabase
+                        .from('login')
+                        .select('*')
+                        .eq('farm_id', farmId)
+                        .eq('password', password)
+                        .single();
 
-if (error || !data) {
-    showError('Invalid Farm ID or Password');
-    console.log('Login failed:', error);
-} else {
-    console.log('User logged in successfully:', data);
-    window.location.href = 'bathorizsolt.github.io/farmmedicine/register.html';
-}
+                    console.log('Supabase response:', { data, error });
 
-  function showError(message) {
-    errorMessage.textContent = message;
-    setTimeout(() => {
-      errorMessage.textContent = '';
-    }, 3000);
-  }
-</script>
+                    if (error || !data) {
+                        showError('Invalid Farm ID or Password');
+                        console.error('Login failed:', error);
+                    } else {
+                        console.log('User logged in successfully:', data);
+                        window.location.href = 'https://bathorizsolt.github.io/farmmedicine/register.html';
+                    }
+                } catch (err) {
+                    console.error('Unexpected error during login:', err);
+                    showError('An unexpected error occurred. Please try again.');
+                }
+            }
 
-    
+            function showError(message) {
+                errorMessage.textContent = message;
+                setTimeout(() => {
+                    errorMessage.textContent = '';
+                }, 3000);
+            }
+        });
+    </script>
 </body>
 </html>
