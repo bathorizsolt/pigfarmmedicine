@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pig Farm Medicine Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        .medicine-select {
+            min-width: 200px;
+        }
+        .notes-textarea {
+            min-height: 100px;
+        }
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-indigo-800">
+                    <i class="fas fa-piggy-bank mr-2"></i> Pig Farm Medicine Tracker
+                </h1>
+                <div class="flex space-x-2">
+                    <button id="exportPdf" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center no-print">
+                        <i class="fas fa-file-pdf mr-2"></i> Export PDF
+                    </button>
+                    <button id="resetDaily" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg flex items-center no-print">
+                        <i class="fas fa-redo mr-2"></i> Reset Records
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-indigo-50 p-4 rounded-lg">
+                    <h2 class="text-xl font-semibold text-indigo-700 mb-4">Add New Medicine Record</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Farm Number</label>
+                                <input type="text" id="farmNumber" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="Farm ID" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Barn/Section Number</label>
+                                <input type="text" id="barnSection" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="Barn/Section" required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Sow's Number (Optional)</label>
+                            <input type="text" id="sowNumber" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="Sow ID">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Medicine</label>
+                            <select id="medicine" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 medicine-select" required>
+                                <option value="">Select Medicine</option>
+                                <option value="Amoxicillin">Amoxicillin</option>
+                                <option value="Oxytetracycline">Oxytetracycline</option>
+                                <option value="Tylosin">Tylosin</option>
+                                <option value="Lincomycin">Lincomycin</option>
+                                <option value="Penicillin">Penicillin</option>
+                                <option value="Ivermectin">Ivermectin</option>
+                                <option value="Doxycycline">Doxycycline</option>
+                                <option value="Colistin">Colistin</option>
+                                <option value="Florfenicol">Florfenicol</option>
+                                <option value="Tiamulin">Tiamulin</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Dosage (grams/ml)</label>
+                                <input type="number" id="dosage" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" min="0" step="0.1" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Number of Pigs</label>
+                                <input type="number" id="pigCount" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" min="1" required>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Giving Date</label>
+                                <input type="date" id="givingDate" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
+                                <input type="date" id="expiryDate" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                            <textarea id="notes" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 notes-textarea" placeholder="Any special instructions or observations"></textarea>
+                        </div>
+
+                        <div class="flex justify-end">
+                            <button id="saveRecord" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg flex items-center">
+                                <i class="fas fa-save mr-2"></i> Save Record
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-indigo-50 p-4 rounded-lg">
+                    <h2 class="text-xl font-semibold text-indigo-700 mb-4">Quick Stats</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-white p-4 rounded-lg shadow text-center">
+                            <div class="text-3xl font-bold text-indigo-600" id="todayCount">0</div>
+                            <div class="text-sm text-gray-500">Today's Records</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow text-center">
+                            <div class="text-3xl font-bold text-indigo-600" id="weekCount">0</div>
+                            <div class="text-sm text-gray-500">This Week's Records</div>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow text-center">
+                            <div class="text-3xl font-bold text-indigo-600" id="monthCount">0</div>
+                            <div class="text-sm text-gray-500">This Month's Records</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg shadow">
+                        <h3 class="font-medium text-gray-700 mb-2">Recent Medicines Used</h3>
+                        <div id="recentMedicines" class="flex flex-wrap gap-2">
+                            <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">No recent medicines</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-lg shadow mt-4">
+                        <h3 class="font-medium text-gray-700 mb-2">Upcoming Expirations</h3>
+                        <div id="upcomingExpirations" class="space-y-2">
+                            <div class="text-sm text-gray-500">No upcoming expirations</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-800">Medicine Records</h2>
+                </div>
+                
+                <div class="p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex space-x-2">
+                            <button id="showAll" class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-md text-sm">All</button>
+                            <button id="showToday" class="px-3 py-1 bg-gray-100 text-gray-700 rounded-md text-sm">Today</button>
+                            <button id="showWeek" class="px-3 py-1 bg-gray-100 text-gray-700 rounded-md text-sm">This Week</button>
+                            <button id="showMonth" class="px-3 py-1 bg-gray-100 text-gray-700 rounded-md text-sm">This Month</button>
+                        </div>
+                        <div class="relative">
+                            <input type="text" id="searchRecords" placeholder="Search records..." class="px-3 py-1 border border-gray-300 rounded-md text-sm w-48">
+                            <i class="fas fa-search absolute right-3 top-2 text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Farm #</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Barn/Section</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sow #</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Medicine</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dosage</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pigs</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Given On</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expires</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider no-print">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recordsTable" class="bg-white divide-y divide-gray-200">
+                                <!-- Records will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="noRecords" class="text-center py-8 text-gray-500">
+                        No medicine records found. Add your first record above.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('givingDate').value = today;
+            
+            loadRecords();
+            updateStats();
+            
+            document.getElementById('saveRecord').addEventListener('click', saveRecord);
+            document.getElementById('exportPdf').addEventListener('click', exportToPdf);
+            document.getElementById('resetDaily').addEventListener('click', resetRecords);
+            document.getElementById('showAll').addEventListener('click', () => filterRecords('all'));
+            document.getElementById('showToday').addEventListener('click', () => filterRecords('today'));
+            document.getElementById('showWeek').addEventListener('click', () => filterRecords('week'));
+            document.getElementById('showMonth').addEventListener('click', () => filterRecords('month'));
+            document.getElementById('searchRecords').addEventListener('input', searchRecords);
+        });
+
+        let records = [];
+
+        function saveRecord() {
+            const farmNumber = document.getElementById('farmNumber').value;
+            const barnSection = document.getElementById('barnSection').value;
+            const sowNumber = document.getElementById('sowNumber').value;
+            const medicine = document.getElementById('medicine').value;
+            const dosage = document.getElementById('dosage').value;
+            const pigCount = document.getElementById('pigCount').value;
+            const givingDate = document.getElementById('givingDate').value;
+            const expiryDate = document.getElementById('expiryDate').value;
+            const notes = document.getElementById('notes').value;
+            
+            if (!farmNumber || !barnSection || !medicine || !dosage || !pigCount || !givingDate) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            const record = {
+                id: Date.now(),
+                farmNumber,
+                barnSection,
+                sowNumber,
+                medicine,
+                dosage,
+                pigCount,
+                givingDate,
+                expiryDate,
+                notes,
+                timestamp: new Date().toISOString()
+            };
+            
+            records.push(record);
+            
+            localStorage.setItem('pigFarmMedicineRecords', JSON.stringify(records));
+            
+            // online database
+            // saveToDatabase(record);
+            
+            document.getElementById('farmNumber').value = '';
+            document.getElementById('barnSection').value = '';
+            document.getElementById('sowNumber').value = '';
+            document.getElementById('medicine').value = '';
+            document.getElementById('dosage').value = '';
+            document.getElementById('pigCount').value = '';
+            document.getElementById('givingDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('expiryDate').value = '';
+            document.getElementById('notes').value = '';
+            
+            loadRecords();
+            updateStats();
+            
+            alert('Record saved successfully!');
+        }
+
+        function loadRecords() {
+            const storedRecords = localStorage.getItem('pigFarmMedicineRecords');
+            if (storedRecords) {
+                records = JSON.parse(storedRecords);
+                displayRecords(records);
+            } else {
+                records = [];
+                displayRecords([]);
+            }
+        }
+
+        function displayRecords(recordsToDisplay) {
+            const tableBody = document.getElementById('recordsTable');
+            const noRecords = document.getElementById('noRecords');
+            
+            tableBody.innerHTML = '';
+            
+            if (recordsToDisplay.length === 0) {
+                noRecords.style.display = 'block';
+                return;
+            }
+            
+            noRecords.style.display = 'none';
+            
+            recordsToDisplay.forEach(record => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${record.farmNumber}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${record.barnSection}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${record.sowNumber || '-'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${record.medicine}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${record.dosage} ${record.dosage.includes('ml') ? '' : 'g'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${record.pigCount}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${formatDate(record.givingDate)}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${record.expiryDate ? formatDate(record.expiryDate) : '-'}</td>
+                    <td class="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">${record.notes || '-'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium no-print">
+                        <button onclick="deleteRecord(${record.id})" class="text-red-600 hover:text-red-900 mr-2">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button onclick="editRecord(${record.id})" class="text-indigo-600 hover:text-indigo-900">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        function filterRecords(period) {
+            const buttons = ['showAll', 'showToday', 'showWeek', 'showMonth'];
+            
+            buttons.forEach(btn => {
+                const button = document.getElementById(btn);
+                if (btn === `show${period.charAt(0).toUpperCase() + period.slice(1)}` || 
+                    (period === 'all' && btn === 'showAll')) {
+                    button.classList.remove('bg-gray-100', 'text-gray-700');
+                    button.classList.add('bg-indigo-100', 'text-indigo-700');
+                } else {
+                    button.classList.remove('bg-indigo-100', 'text-indigo-700');
+                    button.classList.add('bg-gray-100', 'text-gray-700');
+                }
+            });
+            
+            if (period === 'all') {
+                displayRecords(records);
+            } else {
+                const today = new Date().toISOString().split('T')[0];
+                const now = new Date();
+                
+                let filtered = [];
+                
+                if (period === 'today') {
+                    filtered = records.filter(r => r.givingDate === today);
+                } else if (period === 'week') {
+                    const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+                    filtered = records.filter(r => new Date(r.givingDate) >= startOfWeek);
+                } else if (period === 'month') {
+                    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                    filtered = records.filter(r => new Date(r.givingDate) >= startOfMonth);
+                }
+                
+                displayRecords(filtered);
+            }
+        }
+
+        function searchRecords() {
+            const searchTerm = document.getElementById('searchRecords').value.toLowerCase();
+            
+            if (!searchTerm) {
+                displayRecords(records);
+                return;
+            }
+            
+            const filtered = records.filter(record => 
+                (record.sowNumber && record.sowNumber.toLowerCase().includes(searchTerm)) ||
+                record.farmNumber.toLowerCase().includes(searchTerm) ||
+                record.barnSection.toLowerCase().includes(searchTerm) ||
+                record.medicine.toLowerCase().includes(searchTerm) ||
+                record.notes.toLowerCase().includes(searchTerm)
+            );
+            
+            displayRecords(filtered);
+        }
+
+        function deleteRecord(id) {
+            if (confirm('Are you sure you want to delete this record?')) {
+                records = records.filter(record => record.id !== id);
+                localStorage.setItem('pigFarmMedicineRecords', JSON.stringify(records));
+                loadRecords();
+                updateStats();
+            }
+        }
+
+        function editRecord(id) {
+            const record = records.find(r => r.id === id);
+            if (!record) return;
+            
+            document.getElementById('farmNumber').value = record.farmNumber;
+            document.getElementById('barnSection').value = record.barnSection;
+            document.getElementById('sowNumber').value = record.sowNumber || '';
+            document.getElementById('medicine').value = record.medicine;
+            document.getElementById('dosage').value = record.dosage;
+            document.getElementById('pigCount').value = record.pigCount;
+            document.getElementById('givingDate').value = record.givingDate;
+            document.getElementById('expiryDate').value = record.expiryDate || '';
+            document.getElementById('notes').value = record.notes || '';
+            
+            records = records.filter(r => r.id !== id);
+            
+            document.getElementById('farmNumber').focus();
+        }
+
+        function resetRecords() {
+            if (confirm('Are you sure you want to reset all records? This cannot be undone.')) {
+                records = [];
+                localStorage.setItem('pigFarmMedicineRecords', JSON.stringify(records));
+                loadRecords();
+                updateStats();
+                alert('All records have been cleared.');
+            }
+        }
+
+        function updateStats() {
+            const today = new Date().toISOString().split('T')[0];
+            const now = new Date();
+            const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+            const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+            
+            const todayCount = records.filter(r => r.givingDate === today).length;
+            const weekCount = records.filter(r => new Date(r.givingDate) >= startOfWeek).length;
+            const monthCount = records.filter(r => new Date(r.givingDate) >= startOfMonth).length;
+            
+            document.getElementById('todayCount').textContent = todayCount;
+            document.getElementById('weekCount').textContent = weekCount;
+            document.getElementById('monthCount').textContent = monthCount;
+
+            const recentMedicines = [...new Set(records.slice(-10).map(r => r.medicine))].slice(0, 5);
+            const recentContainer = document.getElementById('recentMedicines');
+            recentContainer.innerHTML = '';
+            
+            if (recentMedicines.length === 0) {
+                recentContainer.innerHTML = '<span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">No recent medicines</span>';
+            } else {
+                recentMedicines.forEach(med => {
+                    const span = document.createElement('span');
+                    span.className = 'text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded';
+                    span.textContent = med;
+                    recentContainer.appendChild(span);
+                });
+            }
+            
+            const upcomingExpirations = records
+                .filter(r => r.expiryDate)
+                .filter(r => {
+                    const expiry = new Date(r.expiryDate);
+                    const today = new Date();
+                    const nextWeek = new Date();
+                    nextWeek.setDate(today.getDate() + 7);
+                    return expiry >= today && expiry <= nextWeek;
+                })
+                .sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate))
+                .slice(0, 3);
+            
+            const expContainer = document.getElementById('upcomingExpirations');
+            expContainer.innerHTML = '';
+            
+            if (upcomingExpirations.length === 0) {
+                expContainer.innerHTML = '<div class="text-sm text-gray-500">No upcoming expirations</div>';
+            } else {
+                upcomingExpirations.forEach(record => {
+                    const div = document.createElement('div');
+                    div.className = 'text-sm';
+                    div.innerHTML = `
+                        <span class="font-medium">${record.medicine}</span>
+                        <span class="text-gray-500">expires ${formatDate(record.expiryDate)}</span>
+                    `;
+                    expContainer.appendChild(div);
+                });
+            }
+        }
+
+        function exportToPdf() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(18);
+            doc.text('Pig Farm Medicine Records', 14, 22);
+            
+            doc.setFontSize(10);
+            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
+            
+            const headers = [
+                'Farm #', 
+                'Barn/Section', 
+                'Sow #', 
+                'Medicine', 
+                'Dosage', 
+                'Pigs', 
+                'Given On', 
+                'Expires', 
+                'Notes'
+            ];
+            
+            const data = records.map(record => [
+                record.farmNumber,
+                record.barnSection,
+                record.sowNumber || '-',
+                record.medicine,
+                `${record.dosage} ${record.dosage.includes('ml') ? '' : 'g'}`,
+                record.pigCount,
+                formatDate(record.givingDate),
+                record.expiryDate ? formatDate(record.expiryDate) : '-',
+                record.notes || '-'
+            ]);
+            
+            doc.autoTable({
+                head: [headers],
+                body: data,
+                startY: 35,
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 1
+                },
+                headStyles: {
+                    fillColor: [79, 70, 229] 
+                }
+            });
+            
+            doc.save('pig-farm-medicine-records.pdf');
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString(undefined, options);
+        }
+
+        function saveToDatabase(record) {
+            console.log('Saving to database:', record);
+
+            fetch('your-api-endpoint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(record),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+            
+        }
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=bathorizsolt/pig-farm-medicine-tracker" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+</html>
