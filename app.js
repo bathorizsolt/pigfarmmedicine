@@ -16,7 +16,7 @@ async function sendMessage() {
     alert('Hiba történt: ' + error.message);
   } else {
     input.value = '';
-    loadMessages(); // újratöltés
+    loadMessages();
   }
 }
 
