@@ -93,17 +93,17 @@
             const email = `${farmId}@farm.local`;
 
             try {
-                const { data, error } = await supabase.auth.signInWithPassword({
+               const { data, error } = await supabase.auth.signInWithPassword({
                     email: email,
                     password: password,
-                });
+            });
 
-                if (error) {
-                    showError(error.message);
-                } else {
-                    console.log('User logged in:', data);
-                    window.location.href = 'register.html';
-                }
+            if (error) {
+                showError(error.message);
+            } else {
+                console.log('User logged in:', data);
+                window.location.href = 'register.html';
+            }
             } catch (error) {
                 showError(error.message);
             }
