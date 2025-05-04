@@ -27,9 +27,6 @@
     </style>
 </head>
 <body class="bg-gray-100">
-                </div>
-            <div id="userInfo" class="text-gray-500 text-sm text-left mb-4">
-            </div>
     <div class="container mx-auto px-4 py-8">
         <div class="bg-white rounded-lg shadow-lg p-6">
             <div class="flex justify-between items-center mb-6">
@@ -44,6 +41,7 @@
                         <i class="fas fa-redo mr-2"></i> Reset Records
                     </button>
                 </div>
+            </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div class="bg-indigo-50 p-4 rounded-lg">
@@ -191,7 +189,6 @@
                                 </tr>
                             </thead>
                             <tbody id="recordsTable" class="bg-white divide-y divide-gray-200">
-                                <!-- Records will be inserted here -->
                             </tbody>
                         </table>
                     </div>
@@ -205,13 +202,16 @@
     </div>
 
     <script>
+
         document.addEventListener('DOMContentLoaded', function() {
+
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('givingDate').value = today;
             
             loadRecords();
             updateStats();
             
+
             document.getElementById('saveRecord').addEventListener('click', saveRecord);
             document.getElementById('exportPdf').addEventListener('click', exportToPdf);
             document.getElementById('resetDaily').addEventListener('click', resetRecords);
@@ -222,7 +222,9 @@
             document.getElementById('searchRecords').addEventListener('input', searchRecords);
         });
 
+
         let records = [];
+
 
         function saveRecord() {
             const farmNumber = document.getElementById('farmNumber').value;
@@ -235,11 +237,13 @@
             const expiryDate = document.getElementById('expiryDate').value;
             const notes = document.getElementById('notes').value;
             
+
             if (!farmNumber || !barnSection || !medicine || !dosage || !pigCount || !givingDate) {
                 alert('Please fill in all required fields');
                 return;
             }
             
+
             const record = {
                 id: Date.now(),
                 farmNumber,
@@ -254,13 +258,14 @@
                 timestamp: new Date().toISOString()
             };
             
+
             records.push(record);
             
+
             localStorage.setItem('pigFarmMedicineRecords', JSON.stringify(records));
             
             // online database
-            // saveToDatabase(record);
-            
+
             document.getElementById('farmNumber').value = '';
             document.getElementById('barnSection').value = '';
             document.getElementById('sowNumber').value = '';
@@ -271,11 +276,14 @@
             document.getElementById('expiryDate').value = '';
             document.getElementById('notes').value = '';
             
+
             loadRecords();
             updateStats();
             
+
             alert('Record saved successfully!');
         }
+
 
         function loadRecords() {
             const storedRecords = localStorage.getItem('pigFarmMedicineRecords');
@@ -287,6 +295,7 @@
                 displayRecords([]);
             }
         }
+
 
         function displayRecords(recordsToDisplay) {
             const tableBody = document.getElementById('recordsTable');
@@ -328,9 +337,11 @@
             });
         }
 
+
         function filterRecords(period) {
             const buttons = ['showAll', 'showToday', 'showWeek', 'showMonth'];
             
+
             buttons.forEach(btn => {
                 const button = document.getElementById(btn);
                 if (btn === `show${period.charAt(0).toUpperCase() + period.slice(1)}` || 
@@ -365,6 +376,7 @@
             }
         }
 
+
         function searchRecords() {
             const searchTerm = document.getElementById('searchRecords').value.toLowerCase();
             
@@ -384,6 +396,7 @@
             displayRecords(filtered);
         }
 
+
         function deleteRecord(id) {
             if (confirm('Are you sure you want to delete this record?')) {
                 records = records.filter(record => record.id !== id);
@@ -393,10 +406,12 @@
             }
         }
 
+
         function editRecord(id) {
             const record = records.find(r => r.id === id);
             if (!record) return;
             
+
             document.getElementById('farmNumber').value = record.farmNumber;
             document.getElementById('barnSection').value = record.barnSection;
             document.getElementById('sowNumber').value = record.sowNumber || '';
@@ -407,10 +422,13 @@
             document.getElementById('expiryDate').value = record.expiryDate || '';
             document.getElementById('notes').value = record.notes || '';
             
+
             records = records.filter(r => r.id !== id);
             
+
             document.getElementById('farmNumber').focus();
         }
+
 
         function resetRecords() {
             if (confirm('Are you sure you want to reset all records? This cannot be undone.')) {
@@ -421,6 +439,7 @@
                 alert('All records have been cleared.');
             }
         }
+
 
         function updateStats() {
             const today = new Date().toISOString().split('T')[0];
@@ -435,6 +454,7 @@
             document.getElementById('todayCount').textContent = todayCount;
             document.getElementById('weekCount').textContent = weekCount;
             document.getElementById('monthCount').textContent = monthCount;
+            
 
             const recentMedicines = [...new Set(records.slice(-10).map(r => r.medicine))].slice(0, 5);
             const recentContainer = document.getElementById('recentMedicines');
@@ -481,16 +501,20 @@
             }
         }
 
+        // Export to PDF
         function exportToPdf() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
+            // Title
             doc.setFontSize(18);
             doc.text('Pig Farm Medicine Records', 14, 22);
             
+            // Date
             doc.setFontSize(10);
             doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
             
+            // Table data
             const headers = [
                 'Farm #', 
                 'Barn/Section', 
@@ -515,6 +539,7 @@
                 record.notes || '-'
             ]);
             
+            // AutoTable
             doc.autoTable({
                 head: [headers],
                 body: data,
@@ -524,12 +549,14 @@
                     cellPadding: 1
                 },
                 headStyles: {
-                    fillColor: [79, 70, 229] 
+                    fillColor: [79, 70, 229]
                 }
             });
             
+    
             doc.save('pig-farm-medicine-records.pdf');
         }
+
 
         function formatDate(dateString) {
             if (!dateString) return '';
@@ -537,44 +564,11 @@
             return new Date(dateString).toLocaleDateString(undefined, options);
         }
 
+
         function saveToDatabase(record) {
             console.log('Saving to database:', record);
 
-            fetch('your-api-endpoint', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(record),
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-            
         }
     </script>
-<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=bathorizsolt/pig-farm-medicine-tracker" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  const supabaseUrl = 'https://zjhsypraktznwwpzznlr.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
-  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-  window.onload = async () => {
-    const user = supabase.auth.user();
-
-    if (user) {
-      const userInfoDiv = document.getElementById('userInfo');
-      userInfoDiv.textContent = `Logged in as: ${user.user_metadata.farm_id}`;
-    } else {
-      console.log('No user is logged in');
-    }
-  };
-</script>
-
-</body>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=bathorizsolt/pig-farm-medicine-tracker" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
 </html>
