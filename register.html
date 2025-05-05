@@ -43,7 +43,16 @@
     <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center no-print">
         <i class="fas fa-sign-out-alt mr-2"></i> Logout
     </button>
+<script>
+          const logoutBtn = document.getElementById('logoutBtn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+          await supabase.auth.signOut();
+          window.location.href = 'login.html';
+        });
+      }
 
+          </script>
 </div>
 
             </div>
@@ -608,13 +617,7 @@
 checkSession();
 
 
-      const logoutBtn = document.getElementById('logoutBtn');
-      if (logoutBtn) {
-        logoutBtn.addEventListener('click', async () => {
-          await supabase.auth.signOut();
-          window.location.href = 'login.html';
-        });
-      }
+
 
 
       supabase.auth.onAuthStateChange(async (event, session) => {
