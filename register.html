@@ -43,18 +43,7 @@
     <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center no-print">
         <i class="fas fa-sign-out-alt mr-2"></i> Logout
     </button>
-<script type="module">
-  document.addEventListener('DOMContentLoaded', () => {
-    const supabase = window.supabase;
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', async () => {
-        await supabase.auth.signOut();
-        window.location.href = 'login.html';
-      });
-    }
-  });
-</script>
+
 </div>
 
             </div>
@@ -628,5 +617,26 @@ checkSession();
         }
       });
     </script>
+
+    <script type="module">
+  window.onload = function () {
+    const supabase = window.supabase;
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', async () => {
+        try {
+          await supabase.auth.signOut();
+          window.location.href = 'login.html';
+        } catch (error) {
+          console.error('Logout error:', error);
+          alert('Logout failed: ' + error.message);
+        }
+      });
+    } else {
+      console.error("Logout button not found!");
+    }
+  }
+</script>
+
 </body>
 </html>
