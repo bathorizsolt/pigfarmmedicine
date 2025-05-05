@@ -621,7 +621,33 @@
 
   window.supabase = supabase;
     </script>
+ <script type="module">
+      window.onload = function () {
+        const farmId = localStorage.getItem('farmId');
+        if (farmId) {
+          document.getElementById('farmId').value = farmId;
+        } else {
+          window.location.href = 'login.html';
+        }
+      };
 
+      document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const farmId = document.getElementById('farmId').value.trim();
+        const password = document.getElementById('password').value;
+
+        const { data, error } = await supabase
+          .from('login')
+          .upsert([{ farm_id: farmId, password: password }]);
+
+        if (error) {
+          document.getElementById('errorMessage').textContent = 'Hiba történt a regisztráció során!';
+        } else {
+            document.getElementById('errorMessage').textContent = 'Regisztráció sikeres!';
+        }
+      });
+    </script>
 
 
 </body>
