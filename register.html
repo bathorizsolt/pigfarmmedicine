@@ -587,34 +587,41 @@
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   window.supabase = supabase;
-</script>
+ <script type="module">
 
-    <script type="module">
-  const supabase = window.supabase;
+      const supabase = window.supabase;
 
-  const { data: { session } } = await supabase.auth.getSession();
+      async function checkSession() {
+        const { data: { session } } = await supabase.auth.getSession();
 
-  if (!session) {
-    window.location.href = 'login.html';
-  } else {
-    const farmInput = document.getElementById('farmNumber');
-    if (farmInput) {
-      farmInput.value = session.user.email.split('@')[0];
-      farmInput.readOnly = true;
-    }
-  }
-</script>
+        if (!session) {
+          window.location.href = 'login.html';
+        } else {
+          const farmNumberInput = document.getElementById('farmNumber');
+          if (farmNumberInput) {
+            farmNumberInput.value = session.user.id;
+            farmNumberInput.readOnly = true;
+          }
+        }
+      }
 
-<script type="module">
-  const supabase = window.supabase;
+checkSession();
 
-  const logoutBtn = document.getElementById('logoutBtn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', async () => {
-      await supabase.auth.signOut();
-      window.location.href = 'login.html';
-    });
-  }
-</script>
+
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+          await supabase.auth.signOut();
+          window.location.href = 'login.html';
+        });
+      }
+
+
+      supabase.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'SIGNED_IN') {
+          window.location.href = 'register.html';
+        }
+      });
+    </script>
 </body>
 </html>
