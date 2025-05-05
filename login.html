@@ -68,21 +68,11 @@
     </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBkAjS8HrAEY2d0ui86_j8eCukDLlKNwGM",
-    authDomain: "pigfarmmedicine.firebaseapp.com",
-    projectId: "pigfarmmedicine",
-    storageBucket: "pigfarmmedicine.firebasestorage.app",
-    messagingSenderId: "909610861024",
-    appId: "1:909610861024:web:d0cc8cf687f5a9d6fb6b85",
-    measurementId: "G-BWX9KJKLW3"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+  const supabaseUrl = 'https://zjhsypraktznwwpzznlr.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
   document.getElementById('loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -90,13 +80,19 @@
     const farmId = document.getElementById('farmId').value.trim();
     const password = document.getElementById('password').value;
 
-    const email = `${farmId}@farm.com`;
 
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
+    const { data, error } = await supabase
+      .from('login')
+      .select('*')
+      .eq('farm_id', farmId)
+      .eq('password', password)
+      .single();
+
+    if (error || !data) {
+      document.getElementById('errorMessage').textContent = 'Hibás farm ID vagy jelszó!';
+    } else {
+      localStorage.setItem('farmId', data.farm_id);
       window.location.href = 'register.html';
-    } catch (error) {
-      document.getElementById('errorMessage').textContent = error.message;
     }
   });
 </script>
