@@ -43,6 +43,17 @@
     <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center no-print">
         <i class="fas fa-sign-out-alt mr-2"></i> Logout
     </button>
+                        <script type="module">
+  const supabase = window.supabase;
+
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = 'login.html';
+    });
+  }
+</script>
 </div>
 
             </div>
@@ -580,25 +591,41 @@
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-  const supabase = createClient(
-    'https://zjhsypraktznwwpzznlr.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc'
-  );
+  const supabaseUrl = 'https://zjhsypraktznwwpzznlr.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
+
+  export const supabase = createClient(supabaseUrl, supabaseKey, {
+    auth: {
+      persistSession: true,
+      storage: localStorage
+    }
+  });
+
+  window.supabase = supabase;
+</script>
+
+    <script type="module">
+  const supabase = window.supabase;
 
   supabase.auth.onAuthStateChange((event, session) => {
+    console.log("Auth state change:", event, session);
     if (!session) {
-      window.location.href = "login.html";
+      window.location.href = 'login.html';
+    } else {
+      console.log('User is logged in:', session.user);
+      const farmInput = document.getElementById('farmNumber');
+      if (farmInput && session.user.user_metadata?.farm_id) {
+        farmInput.value = session.user.user_metadata.farm_id;
+        farmInput.readOnly = true;
+      }
     }
   });
 
   const { data: { session } } = await supabase.auth.getSession();
-
-  if (!session || !session.user) {
-    window.location.href = "login.html";
-  } else {
-    const farmId = session.user.email.split("@")[0];
-    document.getElementById("farmNumber").value = farmId;
+  if (!session) {
+    window.location.href = 'login.html';
   }
 </script>
+
 </body>
 </html>
