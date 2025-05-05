@@ -88,10 +88,10 @@
       .single();
 
     if (error || !data) {
-      document.getElementById('errorMessage').textContent = 'Hibás farm ID vagy jelszó!';
+        document.getElementById('errorMessage').textContent = 'Hibás farm ID vagy jelszó!';
     } else {
-      localStorage.setItem('farmId', data.farm_id);
-      window.location.href = 'register.html';
+        localStorage.setItem('farmId', data.farm_id);
+        window.location.href = 'register.html';
     }
 });
     </script>
