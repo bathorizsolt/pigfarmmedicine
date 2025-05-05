@@ -27,16 +27,6 @@
     </style>
 </head>
 <body class="bg-gray-100">
-    <script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-  const supabaseUrl = 'https://zjhsypraktznwwpzznlr.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
-
-  const supabase = createClient(supabaseUrl, supabaseKey);
-
-  window.supabase = supabase;
-    </script>
     <div class="container mx-auto px-4 py-8">
         <div class="bg-white rounded-lg shadow-lg p-6">
             <div class="flex justify-between items-center mb-6">
@@ -53,6 +43,16 @@
     <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center no-print">
         <i class="fas fa-sign-out-alt mr-2"></i> Logout
     </button>
+                        <script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+  const supabaseUrl = 'https://zjhsypraktznwwpzznlr.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  window.supabase = supabase;
+    </script>
 <script type="module">
       window.onload = function () {
         const supabase = window.supabase;
