@@ -43,17 +43,7 @@
     <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center no-print">
         <i class="fas fa-sign-out-alt mr-2"></i> Logout
     </button>
-                        <script type="module">
-  const supabase = window.supabase;
 
-  const logoutBtn = document.getElementById('logoutBtn');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', async () => {
-      await supabase.auth.signOut();
-      window.location.href = 'login.html';
-    });
-  }
-</script>
 </div>
 
             </div>
@@ -626,6 +616,16 @@
     window.location.href = 'login.html';
   }
 </script>
+                        <script type="module">
+  const supabase = window.supabase;
 
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = 'login.html';
+    });
+  }
+</script>
 </body>
 </html>
