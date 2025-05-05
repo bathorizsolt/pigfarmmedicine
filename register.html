@@ -43,9 +43,6 @@
                     <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center no-print">
                         <i class="fas fa-sign-out-alt mr-2"></i> Logout
                     </button>
-                    <input type="text" id="farmId" name="farmId" required
-                    class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                    placeholder="Farm ID">
                 </div>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -56,9 +53,7 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Farm Number</label>
-                                       <input type="text" id="farmId" name="farmId" required
-                                    class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                    placeholder="Farm ID">
+                                <input type="text" id="farmId" name="farmId" required class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="Farm ID">
                             </div>
 
                             <div>
@@ -250,7 +245,7 @@
         let records = [];
 
         function saveRecord() {
-            const farmNumber = document.getElementById('farmNumber').value;
+            const farmNumber = document.getElementById('farmId').value;
             const barnSection = document.getElementById('barnSection').value;
             const sowNumber = document.getElementById('sowNumber').value;
             const medicine = document.getElementById('medicine').value;
@@ -283,8 +278,7 @@
 
             localStorage.setItem('pigFarmMedicineRecords', JSON.stringify(records));
 
-            // online database
-            document.getElementById('farmNumber').value = '';
+            document.getElementById('farmId').value = '';
             document.getElementById('barnSection').value = '';
             document.getElementById('sowNumber').value = '';
             document.getElementById('medicine').value = '';
@@ -297,7 +291,43 @@
             loadRecords();
             updateStats();
 
+            if (window.supabase) {
+                saveToDatabase(record);
+            }
+
             alert('Record saved successfully!');
+        }
+
+        async function saveToDatabase(record) {
+            try {
+                if (!window.supabase) {
+                    console.error('Supabase client not available');
+                    return;
+                }
+
+                const { data, error } = await window.supabase
+                    .from('medicine_records')
+                    .insert([{
+                        farm_id: record.farmNumber,
+                        barn_section: record.barnSection,
+                        sow_number: record.sowNumber,
+                        medicine: record.medicine,
+                        dosage: record.dosage,
+                        pig_count: record.pigCount,
+                        giving_date: record.givingDate,
+                        expiry_date: record.expiryDate,
+                        notes: record.notes,
+                        created_at: record.timestamp
+                    }]);
+
+                if (error) {
+                    console.error('Error saving to database:', error);
+                } else {
+                    console.log('Successfully saved to database:', data);
+                }
+            } catch (err) {
+                console.error('Exception while saving to database:', err);
+            }
         }
 
         function loadRecords() {
@@ -356,7 +386,7 @@
 
             buttons.forEach(btn => {
                 const button = document.getElementById(btn);
-                if (btn === `show${period.charAt(0).toUpperCase() + period.slice(1)}` || 
+                if (btn === `show${period.charAt(0).toUpperCase() + period.slice(1)}` ||
                     (period === 'all' && btn === 'showAll')) {
                     button.classList.remove('bg-gray-100', 'text-gray-700');
                     button.classList.add('bg-indigo-100', 'text-indigo-700');
