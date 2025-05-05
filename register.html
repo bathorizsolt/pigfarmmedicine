@@ -27,6 +27,15 @@
     </style>
 </head>
 <body class="bg-gray-100">
+    <script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+  const supabaseUrl = 'https://zjhsypraktznwwpzznlr.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  window.supabase = supabase;
     <div class="container mx-auto px-4 py-8">
         <div class="bg-white rounded-lg shadow-lg p-6">
             <div class="flex justify-between items-center mb-6">
@@ -43,7 +52,38 @@
     <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center no-print">
         <i class="fas fa-sign-out-alt mr-2"></i> Logout
     </button>
+<script type="module">
+      window.onload = function () {
+        const supabase = window.supabase;
 
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+          logoutBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            try {
+
+              await supabase.auth.signOut();
+
+
+              const { data: user } = await supabase.auth.getUser();
+              
+              if (!user) {
+ 
+                window.location.href = 'login.html';
+              } else {
+                console.error('Logout unsuccessful');
+              }
+            } catch (error) {
+              console.error('Logout error:', error);
+              alert('Logout failed: ' + error.message);
+            }
+          });
+        } else {
+          console.error("Logout button not found!");
+        }
+      };
+    </script>
 </div>
 
             </div>
@@ -578,48 +618,6 @@
 
         }
     </script>
-<script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-  const supabaseUrl = 'https://zjhsypraktznwwpzznlr.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
-
-  const supabase = createClient(supabaseUrl, supabaseKey);
-
-  window.supabase = supabase;
-<script type="module">
-  const supabase = window.supabase;
-  async function setFarmId() {
-    const {
-      data: { session }
-    } = await supabase.auth.getSession();
-
-    if (!session) {
-      window.location.href = 'login.html';
-      return;
-    }
-
-    const farmId = session.user.user_metadata.farm_id;
-    const farmInput = document.getElementById('farmNumber');
-    if (farmInput) {
-      farmInput.value = farmId;
-      farmInput.disabled = true;
-    }
-  }
-  function setupLogout() {
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', async () => {
-        await supabase.auth.signOut();
-        window.location.href = 'login.html';
-      });
-    }
-  }
-  window.addEventListener('DOMContentLoaded', () => {
-    setFarmId();
-    setupLogout();
-  });
-</script>
 
 
 
