@@ -578,63 +578,40 @@
         }
     </script>
 <script type="module">
-
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBkAjS8HrAEY2d0ui86_j8eCukDLlKNwGM",
-    authDomain: "pigfarmmedicine.firebaseapp.com",
-    projectId: "pigfarmmedicine",
-    storageBucket: "pigfarmmedicine.firebasestorage.app",
-    messagingSenderId: "909610861024",
-    appId: "1:909610861024:web:d0cc8cf687f5a9d6fb6b85",
-    measurementId: "G-BWX9KJKLW3"
-  };
+  const supabaseUrl = "https://zjhsypraktznwwpzznlr.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc";
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+  const { data: { user } } = await supabase.auth.getUser();
 
-    auth.onAuthStateChanged((user) => {
-  if (user) {
-    const farmId = user.email;
+  if (!user) {
+    window.location.href = "login.html";
   } else {
-    window.location.href = 'login.html';
+    const farmId = user.email.split("@")[0];
+    const farmInput = document.getElementById("farmNumber");
+    if (farmInput) {
+      farmInput.value = farmId;
+      farmInput.readOnly = true;
+    }
+
+    localStorage.setItem("farmId", farmId);
   }
-});
 
-    
-</script>
 
-    <script type="module">
-  import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-  const auth = getAuth();
-
-  document.getElementById('logoutBtn').addEventListener('click', async () => {
-    try {
-      await signOut(auth);
-      window.location.href = 'login.html';
-    } catch (error) {
-      alert('Logout failed: ' + error.message);
-    }
-  });
-</script>
-
-<script type="module">
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-  const auth = getAuth();
-
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      const farmId = user.email.split('@')[0];
-      document.getElementById('farmNumber').value = farmId;
-    } else {
-      window.location.href = 'login.html';
-    }
-  });
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        alert("Logout failed: " + error.message);
+      } else {
+        window.location.href = "login.html";
+      }
+    });
+  }
 </script>
 </body>
 </html>
