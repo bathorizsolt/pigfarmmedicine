@@ -74,26 +74,26 @@
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
         window.supabase = createClient(supabaseUrl, supabaseKey);
 
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+       document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-            const farmId = document.getElementById('farmId').value.trim();
-            const password = document.getElementById('password').value;
+    const farmId = document.getElementById('farmId').value.trim();
+    const password = document.getElementById('password').value;
 
-            const { data, error } = await supabase
-                .from('login')
-                .select('*')
-                .eq('farm_id', farmId)
-                .eq('password', password)
-                .single();
+    const { data, error } = await supabase
+      .from('login')
+      .select('*')
+      .eq('farm_id', farmId)
+      .eq('password', password)
+      .single();
 
-            if (error || !data) {
-                document.getElementById('errorMessage').textContent = 'Hibás farm ID vagy jelszó!';
-            } else {
-
-                window.location.href = 'register.html';
-            }
-        });
+    if (error || !data) {
+      document.getElementById('errorMessage').textContent = 'Hibás farm ID vagy jelszó!';
+    } else {
+      localStorage.setItem('farmId', data.farm_id);
+      window.location.href = 'register.html';
+    }
+});
     </script>
 </body>
 </html>
