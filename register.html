@@ -583,6 +583,14 @@
 
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
+
+    auth.onAuthStateChanged((user) => {
+  if (user) {
+    const farmId = user.email;
+  } else {
+    window.location.href = 'login.html';
+  }
+});
 </script>
     
 </body>
