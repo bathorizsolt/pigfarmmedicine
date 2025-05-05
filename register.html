@@ -581,22 +581,26 @@
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-  const supabase = createClient(
-    'https://zjhsypraktznwwpzznlr.supabase.co', // ← Ezt cseréld ki!
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc'                     // ← Ezt is!
-  );
+  const supabaseUrl = 'https://zjhsypraktznwwpzznlr.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
+
+  const supabase = createClient(supabaseUrl, supabaseKey);
+
+  window.supabase = supabase;
+</script>
+
+    <script type="module">
+  const supabase = window.supabase;
 
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session) {
     window.location.href = 'login.html';
   } else {
-    const userEmail = session.user.email;
-    const farmId = userEmail.split('@')[0];
     const farmInput = document.getElementById('farmNumber');
     if (farmInput) {
-      farmInput.value = farmId;
-      farmInput.disabled = true;
+      farmInput.value = session.user.email.split('@')[0];
+      farmInput.readOnly = true;
     }
   }
 </script>
