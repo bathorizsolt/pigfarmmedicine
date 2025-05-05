@@ -84,20 +84,23 @@
   };
 
   const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
+  const auth = getAuth(app);
 
-    loginForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const farmId = document.getElementById('farmId').value.trim();
-  const password = document.getElementById('password').value;
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-  try {
-    const userCredential = await auth.signInWithEmailAndPassword(farmId, password);
-    window.location.href = 'register.html';
-  } catch (error) {
-    alert('Wrong e-mail or password');
-  }
-});
+    const farmId = document.getElementById('farmId').value.trim();
+    const password = document.getElementById('password').value;
+
+    const email = `${farmId}@farm.com`;
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      window.location.href = 'register.html';
+    } catch (error) {
+      document.getElementById('errorMessage').textContent = error.message;
+    }
+  });
 </script>
 
     
