@@ -581,42 +581,27 @@
 <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-  const supabaseUrl = 'https://zjhsypraktznwwpzznlr.supabase.co';
-  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
-
-  export const supabase = createClient(supabaseUrl, supabaseKey, {
-    auth: {
-      persistSession: true,
-      storage: localStorage
-    }
-  });
-
-  window.supabase = supabase;
-</script>
-
-    <script type="module">
-  const supabase = window.supabase;
-
-  supabase.auth.onAuthStateChange((event, session) => {
-    console.log("Auth state change:", event, session);
-    if (!session) {
-      window.location.href = 'login.html';
-    } else {
-      console.log('User is logged in:', session.user);
-      const farmInput = document.getElementById('farmNumber');
-      if (farmInput && session.user.user_metadata?.farm_id) {
-        farmInput.value = session.user.user_metadata.farm_id;
-        farmInput.readOnly = true;
-      }
-    }
-  });
+  const supabase = createClient(
+    'https://zjhsypraktznwwpzznlr.supabase.co', // ← Ezt cseréld ki!
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc'                     // ← Ezt is!
+  );
 
   const { data: { session } } = await supabase.auth.getSession();
+
   if (!session) {
     window.location.href = 'login.html';
+  } else {
+    const userEmail = session.user.email;
+    const farmId = userEmail.split('@')[0];
+    const farmInput = document.getElementById('farmNumber');
+    if (farmInput) {
+      farmInput.value = farmId;
+      farmInput.disabled = true;
+    }
   }
 </script>
-                        <script type="module">
+
+<script type="module">
   const supabase = window.supabase;
 
   const logoutBtn = document.getElementById('logoutBtn');
