@@ -585,14 +585,15 @@
   const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc";
   const supabase = createClient(supabaseUrl, supabaseKey);
 
-  const { data: { user } } = await supabase.auth.getUser();
+ const { data: { session } } = await supabase.auth.getSession();
 
-  if (!user) {
-    window.location.href = "login.html";
-  } else {
-    const farmId = user.email.split("@")[0];
-    const farmInput = document.getElementById("farmNumber");
-    if (farmInput) {
+if (!session || !session.user) {
+  window.location.href = "login.html";
+} else {
+  const farmId = session.user.email.split("@")[0];
+  document.getElementById("farmNumber").value = farmId;
+}
+
       farmInput.value = farmId;
       farmInput.readOnly = true;
     }
