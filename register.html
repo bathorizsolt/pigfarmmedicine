@@ -43,7 +43,10 @@
     <button id="logoutBtn" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center no-print">
         <i class="fas fa-sign-out-alt mr-2"></i> Logout
     </button>
-                       
+       <input type="text" id="farmId" name="farmId" required
+       class="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+       placeholder="Farm ID">
+                
 <script type="module">
       window.onload = function () {
         const supabase = window.supabase;
