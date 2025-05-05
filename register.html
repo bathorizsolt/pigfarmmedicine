@@ -587,56 +587,41 @@
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   window.supabase = supabase;
- <script type="module">
+<script type="module">
+  const supabase = window.supabase;
+  async function setFarmId() {
+    const {
+      data: { session }
+    } = await supabase.auth.getSession();
 
-      const supabase = window.supabase;
+    if (!session) {
+      window.location.href = 'login.html';
+      return;
+    }
 
-      async function checkSession() {
-        const { data: { session } } = await supabase.auth.getSession();
-
-        if (!session) {
-          window.location.href = 'login.html';
-        } else {
-          const farmNumberInput = document.getElementById('farmNumber');
-          if (farmNumberInput) {
-            farmNumberInput.value = session.user.id;
-            farmNumberInput.readOnly = true;
-          }
-        }
-      }
-
-checkSession();
-
-
-
-
-
-      supabase.auth.onAuthStateChange(async (event, session) => {
-        if (event === 'SIGNED_IN') {
-          window.location.href = 'register.html';
-        }
-      });
-    </script>
-
-    <script type="module">
-  window.onload = function () {
-    const supabase = window.supabase;
+    const farmId = session.user.user_metadata.farm_id;
+    const farmInput = document.getElementById('farmNumber');
+    if (farmInput) {
+      farmInput.value = farmId;
+      farmInput.disabled = true;
+    }
+  }
+  function setupLogout() {
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
       logoutBtn.addEventListener('click', async () => {
-        try {
-          await supabase.auth.signOut();
-          window.location.href = 'login.html';
-        } catch (error) {
-          console.error('Logout error:', error);
-          alert('Logout failed: ' + error.message);
-        }
+        await supabase.auth.signOut();
+        window.location.href = 'login.html';
       });
-    } else {
-      console.error("Logout button not found!");
     }
   }
+  window.addEventListener('DOMContentLoaded', () => {
+    setFarmId();
+    setupLogout();
+  });
 </script>
+
+
 
 </body>
 </html>
