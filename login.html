@@ -85,6 +85,21 @@
 
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
+
+    loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const farmId = document.getElementById('farmId').value.trim();
+  const password = document.getElementById('password').value;
+
+  try {
+    const userCredential = await auth.signInWithEmailAndPassword(farmId, password);
+    window.location.href = 'register.html';
+  } catch (error) {
+    alert('Wrong e-mail or password');
+  }
+});
 </script>
+
+    
 </body>
 </html>
