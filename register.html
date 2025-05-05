@@ -578,40 +578,26 @@
         }
     </script>
 <script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
+  const supabase = createClient(
+    'https://zjhsypraktznwwpzznlr.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc'
+  );
 
-  const supabaseUrl = "https://zjhsypraktznwwpzznlr.supabase.co";
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc";
-  const supabase = createClient(supabaseUrl, supabaseKey);
-
- const { data: { session } } = await supabase.auth.getSession();
-
-if (!session || !session.user) {
-  window.location.href = "login.html";
-} else {
-  const farmId = session.user.email.split("@")[0];
-  document.getElementById("farmNumber").value = farmId;
-}
-
-      farmInput.value = farmId;
-      farmInput.readOnly = true;
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (!session) {
+      window.location.href = "login.html";
     }
+  });
 
-    localStorage.setItem("farmId", farmId);
-  }
+  const { data: { session } } = await supabase.auth.getSession();
 
-
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        alert("Logout failed: " + error.message);
-      } else {
-        window.location.href = "login.html";
-      }
-    });
+  if (!session || !session.user) {
+    window.location.href = "login.html";
+  } else {
+    const farmId = session.user.email.split("@")[0];
+    document.getElementById("farmNumber").value = farmId;
   }
 </script>
 </body>
