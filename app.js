@@ -123,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function() {
         addListener('showMonth', 'click', () => filterRecords('month'));
         addListener('searchRecords', 'input', searchRecords);
         addListener('logoutBtn', 'click', logout);
+        addListener('applyDateFilter', 'click', applyDateFilter);
     };
 
     setupEventListeners();
@@ -301,6 +302,42 @@ function filterRecords(period) {
           button.classList.add('bg-gray-100', 'text-gray-700');
       }
   });
+    async function applyDateFilter() {
+        const fromDate = document.getElementById('fromDate').value;
+        const toDate = document.getElementById('toDate').value;
+
+        if (!fromDate || !toDate) {
+            alert('Please select both "From" and "To" dates.');
+            return;
+        }
+
+        if (!supabaseClient) {
+            initSupabase();
+            if (!supabaseClient) {
+                alert('Error: Supabase client not initialized');
+                return;
+            }
+        }
+
+        try {
+            const { data: filteredRecords, error } = await supabaseClient
+                .from('medicine_records')
+                .select('*')
+                .gte('giving_date', fromDate)
+                .lte('giving_date', toDate);
+
+            if (error) {
+                console.error('Error fetching records:', error);
+                alert('Failed to fetch records. Please try again.');
+                return;
+            }
+
+            displayRecords(filteredRecords);
+        } catch (err) {
+            console.error('Unexpected error:', err);
+            alert('An unexpected error occurred. Please try again.');
+        }
+    }
 
   if (period === 'all') {
       displayRecords(records);
