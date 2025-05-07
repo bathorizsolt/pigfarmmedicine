@@ -6,17 +6,9 @@
     <title>Pig Farm Medicine Tracker - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .login-container {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1556211306-6baa9d12a1c7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .error-message {
-            transition: all 0.3s ease;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js"></script>
 </head>
 <body class="bg-gray-100">
     <div id="loginPage" class="min-h-screen flex items-center justify-center login-container">
@@ -66,35 +58,6 @@
             </form>
         </div>
     </div>
-
-    <script type="module">
-        import { createClient } from 'https://esm.sh/@supabase/supabase-js';
-
-        const supabaseUrl = 'https://zjhsypraktznwwpzznlr.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpqaHN5cHJha3R6bnd3cHp6bmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYzNzc2ODksImV4cCI6MjA2MTk1MzY4OX0.AcH8SmsGIhx8MXnPWvbTBBn56kiOGTxljeAdEY-iCSc';
-        window.supabase = createClient(supabaseUrl, supabaseKey);
-
-       document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const farmId = document.getElementById('farmId').value.trim();
-    const password = document.getElementById('password').value;
-
-    const { data, error } = await supabase
-      .from('login')
-      .select('*')
-      .eq('farm_id', farmId)
-      .eq('password', password)
-      .single();
-
-    if (error || !data) {
-        document.getElementById('errorMessage').textContent = 'Hibás farm ID vagy jelszó!';
-    } else {
-        localStorage.setItem('farmId', data.farm_id);
-        window.location.href = 'register.html';
-    }
-});
-    </script>
 </body>
 </html>
 
