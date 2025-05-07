@@ -7,3 +7,4 @@ To do:
 * Nyelvvalaszto -> dan, angol
 * kiexportalas farm szam alapjan
 * Az osszes kiexportalt PDF aljan egy Summary a felhasznalt mennyisegbol (dosage), kulonbseget teve a g es a ml kozott
+* Datumvalaszto a kiexportalando idotartamhoz
