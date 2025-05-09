@@ -11,3 +11,4 @@ To do:
 - [x] Szűrő a listára
 - [x] Adatbázis lekérő az exporthoz
 - [ ] Export PDF-re filterezo
+- [ ] Dögnyilvantartas
