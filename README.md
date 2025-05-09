@@ -3,7 +3,7 @@
 To do:
 - [x] Kereses farm number alapjan a listaban
 - [x] Kulso adatbazisba valo mentes
-- [ ] To do list farm szam alapjan a jobb oldalra a lejaro gyogyszerek ala, ami eltunik pipalas utan
+- [x] To do list farm szam alapjan a jobb oldalra a lejaro gyogyszerek ala, ami eltunik pipalas utan
 - [ ] Nyelvvalaszto -> dan, angol
 - [x] kiexportalas farm szam alapjan
 - [ ] Az osszes kiexportalt PDF aljan egy Summary a felhasznalt mennyisegbol (dosage), kulonbseget teve a g es a ml kozott
