@@ -12,3 +12,4 @@ To do:
 - [x] Adatbázis lekérő az exporthoz
 - [ ] Export PDF-re filterezo
 - [ ] Dögnyilvantartas
+- [ ] lapos elrendezes 3 kulonbozo lappal(gyogyyszer, dög, to-do)
