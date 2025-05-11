@@ -11,5 +11,6 @@ To do:
 - [x] Szűrő a listára
 - [x] Adatbázis lekérő az exporthoz
 - [ ] Export PDF-re filterezo
-- [ ] Dögnyilvantartas
-- [ ] lapos elrendezes 3 kulonbozo lappal(gyogyyszer, dög, to-do)
+- [x] Dögnyilvantartas
+- [ ] Dögnyilvantartas bug fix(edit button not working)
+- [x] lapos elrendezes 3 kulonbozo lappal(gyogyyszer, dög, to-do)
