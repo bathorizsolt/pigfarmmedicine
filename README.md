@@ -4,7 +4,7 @@ To do:
 - [x] Kereses farm number alapjan a listaban
 - [x] Kulso adatbazisba valo mentes
 - [x] To do list farm szam alapjan a jobb oldalra a lejaro gyogyszerek ala, ami eltunik pipalas utan
-- [x] Nyelvvalaszto -> dan, angol
+- [x] Nyelvvalaszto -> dan, angol !!! TRANSLATE THE NEW ELEMENTS
 - [x] kiexportalas farm szam alapjan
 - [ ] Az osszes kiexportalt PDF aljan egy Summary a felhasznalt mennyisegbol (dosage), kulonbseget teve a g es a ml kozott
 - [x] Datumvalaszto a kiexportalando idotartamhoz
