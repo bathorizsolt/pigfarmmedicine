@@ -12,5 +12,5 @@ To do:
 - [x] Adatbázis lekérő az exporthoz
 - [ ] Export PDF-re filterezo
 - [x] Dögnyilvantartas
-- [ ] Dögnyilvantartas bug fix(edit button not working)
+- [ ] Dögnyilvantartas bug fix(edit button not working) + add stable
 - [x] lapos elrendezes 3 kulonbozo lappal(gyogyyszer, dög, to-do)
